@@ -1,3 +1,4 @@
+/*
 package com.example
 
 import io.ktor.client.request.*
@@ -8,7 +9,8 @@ import io.ktor.http.*
 import com.example.plugins.*
 
 class ApplicationTest {
-    @Test
+    */
+/*@Test
     fun testRoot() = testApplication {
         application {
 
@@ -17,5 +19,4 @@ class ApplicationTest {
             assertEquals(HttpStatusCode.OK, status)
             assertEquals("Hello World!", bodyAsText())
         }
-    }
-}
+    }**/

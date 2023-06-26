@@ -43,7 +43,7 @@ fun Application.configureMushroomRouting() {
             call.respondText(json, contentType = ContentType.Application.Json)
         }
 
-        post("/mushroom/getAll") {
+        post ("/mushroom/getAll") {
             val result = MushroomRepository.getAll()
             val rootObject = buildJsonObject {
                 put("mushrooms", Json.encodeToJsonElement(result))
