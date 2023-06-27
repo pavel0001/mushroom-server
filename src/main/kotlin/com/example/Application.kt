@@ -18,8 +18,8 @@ fun main() {
     Database.connect(
         url = "jdbc:postgresql://localhost:5432/mushroom",
         driver = "org.postgresql.Driver",
-        user = "newuser",
-        password = "password"
+        user = "postgres",
+        password = "pz40tks"
     )
     embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module).start(wait = true)
 }
