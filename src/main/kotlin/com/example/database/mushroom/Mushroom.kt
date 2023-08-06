@@ -21,7 +21,7 @@ object MushroomTable : Table("mushrooms") {
                 it[lon] = mushroom.lon
                 it[name] = mushroom.name
                 it[description] = mushroom.description
-                it[image] = mushroom.image
+                it[image] = mushroom.image.orEmpty()
             }
         }
     }
