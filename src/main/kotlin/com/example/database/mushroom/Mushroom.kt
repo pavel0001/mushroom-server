@@ -10,7 +10,7 @@ object MushroomTable : Table("mushrooms") {
     private val lon = double(name = "lon")
     private val name = varchar(name = "name", length = 50)
     private val description = varchar(name = "description", length = 250)
-    private val image = long(name = "image")
+    private val image = varchar(name = "image", length = 250)
 
     override val primaryKey = PrimaryKey(id)
 

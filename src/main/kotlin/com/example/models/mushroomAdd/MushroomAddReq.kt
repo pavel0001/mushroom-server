@@ -1,24 +1,23 @@
-package com.example.database.mushroom
+package com.example.models.mushroomAdd
 
 import com.example.models.Mushroom
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MushroomDTO(
-    val id: Long,
+data class MushroomAddReq(
     val lat: Double,
     val lon: Double,
     val name: String,
     val description: String,
     val image: String
 ) {
-    fun toMushroom(): Mushroom {
+    fun toMushroom(imageName: String): Mushroom {
         return Mushroom(
             lat = lat,
             lon = lon,
             name = name,
             description = description,
-            image = image
+            image = imageName
         )
     }
 }

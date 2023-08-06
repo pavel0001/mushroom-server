@@ -52,4 +52,8 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
     implementation("io.ktor:ktor-server-call-logging:$ktor_version")
+    implementation(kotlin("stdlib-jdk8"))
+}
+kotlin {
+    jvmToolchain(11)
 }
