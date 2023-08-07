@@ -1,9 +1,14 @@
 package com.example.routing.mushroom
 
-import com.example.models.GetByIdReq
-import com.example.models.mushroomAdd.MushroomAddReq
-import com.example.models.mushroomAdd.MushroomAddResp
+import com.example.models.BaseError
 import com.example.repository.MushroomRepository
+import com.example.routing.mushroom.add.MushroomAddReq
+import com.example.routing.mushroom.add.MushroomAddResp
+import com.example.routing.mushroom.delete.MushroomDeleteReq
+import com.example.routing.mushroom.delete.MushroomDeleteResp
+import com.example.routing.mushroom.get.MushroomGetReq
+import com.example.routing.mushroom.get.MushroomGetResp
+import com.example.routing.mushroom.getAll.MushroomGetAllResp
 import com.example.utils.saveByteArray
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -11,18 +16,11 @@ import io.ktor.server.http.content.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.encodeToJsonElement
 import java.io.File
 
 fun Application.configureMushroomRouting() {
 
     routing {
-        post("/") {
-            call.respondText("Hello World!")
-        }
 
         post("/mushroom/add") {
             val mushroom = call.receive<MushroomAddReq>()
@@ -30,38 +28,87 @@ fun Application.configureMushroomRouting() {
                 val imageFileName = mushroom.image.saveByteArray("files/")
                 try {
                     MushroomRepository.saveMushroom(mushroom.toMushroom(imageFileName))
-                    call.respond(HttpStatusCode.OK, MushroomAddResp(message = "success $imageFileName"))
+                    call.respond(
+                        HttpStatusCode.OK, MushroomAddResp(
+                            isSuccess = true,
+                            fileName = imageFileName
+                        )
+                    )
                 } catch (ex: java.lang.Exception) {
-                    call.respond(HttpStatusCode.InternalServerError, MushroomAddResp(message = "database error"))
+                    call.respond(
+                        HttpStatusCode.InternalServerError,
+                        MushroomAddResp(
+                            isSuccess = false,
+                            error = BaseError.fromException(ex)
+                        ),
+                    )
                 }
-            } catch (_: java.lang.Exception) {
-                call.respond(HttpStatusCode.InternalServerError, MushroomAddResp(message = "image parsing error"))
+            } catch (ex: java.lang.Exception) {
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    MushroomAddResp(
+                        isSuccess = false,
+                        error = BaseError.fromException(ex)
+                    ),
+                )
             }
         }
 
         post("/mushroom/delete") {
-            val mushroomId = call.receive<Long>()
+            val mushroomDeleteReq = call.receive<MushroomDeleteReq>()
             try {
-                MushroomRepository.removeMushroom(mushroomId)
-                call.respond(status = HttpStatusCode.OK, message = "success")
+                MushroomRepository.removeMushroom(mushroomDeleteReq.id)
+                call.respond(
+                    status = HttpStatusCode.OK,
+                    message = MushroomDeleteResp(
+                        isSuccess = true
+                    ),
+                )
             } catch (e: Exception) {
-                call.run { respond(status = HttpStatusCode.BadRequest, message = "Mushroom delete error!") }
+                call.respond(
+                    status = HttpStatusCode.BadRequest,
+                    message = MushroomDeleteResp(
+                        isSuccess = false,
+                        error = BaseError.fromException(e)
+                    ),
+                )
             }
         }
 
         post("/mushroom/get") {
-            val id = call.receive<GetByIdReq>().id
-            val result = MushroomRepository.getById(id)
-            val json = Json.encodeToString(result)
-            call.respondText(json, contentType = ContentType.Application.Json)
+            try {
+                val id = call.receive<MushroomGetReq>().id
+                val result = MushroomRepository.getById(id).toMushroom()
+                call.respond(
+                    status = HttpStatusCode.OK, message = MushroomGetResp(
+                        isSuccess = true,
+                        mushroom = result
+                    )
+                )
+            } catch (ex: java.lang.Exception) {
+                call.respond(
+                    status = HttpStatusCode.InternalServerError,
+                    message = MushroomGetResp(
+                        isSuccess = false,
+                        error = BaseError.fromException(ex)
+                    ),
+                )
+            }
         }
 
         post("/mushroom/getAll") {
-            val result = MushroomRepository.getAll()
-            val rootObject = buildJsonObject {
-                put("mushrooms", Json.encodeToJsonElement(result))
+            try {
+                val result = MushroomRepository.getAll().map { it.toMushroom() }
+                call.respond(
+                    status = HttpStatusCode.OK,
+                    message = MushroomGetAllResp(mushrooms = result)
+                )
+            } catch (ex: java.lang.Exception) {
+                call.respond(
+                    status = HttpStatusCode.OK,
+                    message = MushroomGetAllResp(error = BaseError.fromException(ex))
+                )
             }
-            call.respond(rootObject)
         }
 
         staticFiles("/mushroom/images", File("files")) {

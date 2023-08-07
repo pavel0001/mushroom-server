@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Mushroom(
+    val id: Long,
     val lat: Double,
     val lon: Double,
     val name: String,
@@ -13,7 +14,7 @@ data class Mushroom(
 ) {
     fun toMushroomDTO(): MushroomDTO {
         return MushroomDTO(
-            id = 0,
+            id = id,
             lat = lat,
             lon = lon,
             name = name,

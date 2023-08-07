@@ -14,6 +14,7 @@ data class MushroomDTO(
 ) {
     fun toMushroom(): Mushroom {
         return Mushroom(
+            id = id,
             lat = lat,
             lon = lon,
             name = name,

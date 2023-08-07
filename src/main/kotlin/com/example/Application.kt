@@ -1,6 +1,7 @@
 package com.example
 
 import com.example.routing.mushroom.configureMushroomRouting
+import com.example.routing.swager.configureSwagerRouting
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -16,7 +17,7 @@ import org.slf4j.event.Level
 
 fun main() {
     Database.connect(
-        url = "jdbc:postgresql://localhost:5432/mushroom",
+        url = "jdbc:postgresql://185.105.88.49:5432/mushroom",
         driver = "org.postgresql.Driver",
         user = "postgres",
         password = "pz40tks"
@@ -49,5 +50,6 @@ fun Application.module() {
         allowHeader("MyCustomHeader")
         allowHeader(HttpHeaders.ContentType)
     }
-    configureMushroomRouting ()
+    configureMushroomRouting()
+    configureSwagerRouting()
 }

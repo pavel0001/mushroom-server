@@ -16,7 +16,7 @@ ktor {
 }
 
 group = "com.example"
-version = "0.0.2"
+version = "0.0.3"
 application {
     mainClass.set("com.example.ApplicationKt")
 
@@ -53,6 +53,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
     implementation("io.ktor:ktor-server-call-logging:$ktor_version")
     implementation(kotlin("stdlib-jdk8"))
+    implementation("io.ktor:ktor-server-swagger:$ktor_version")
 }
 kotlin {
     jvmToolchain(11)
