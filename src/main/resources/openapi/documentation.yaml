@@ -27,7 +27,7 @@ paths:
                   description: ""
                   value:
                     isSuccess: true
-                    fileName: "null"
+                    fileName: "asdasdasdafdsfsdfds.png"
                     error: "null"
         "500":
           description: "Internal Server Error"

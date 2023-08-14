@@ -19,7 +19,7 @@ data class MushroomDTO(
             lon = lon,
             name = name,
             description = description,
-            image = image.orEmpty()
+            image = image.orEmpty().ifEmpty { "placeholder.png" }
         )
     }
 }
