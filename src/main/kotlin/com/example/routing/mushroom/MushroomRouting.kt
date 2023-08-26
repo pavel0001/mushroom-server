@@ -9,6 +9,8 @@ import com.example.routing.mushroom.delete.MushroomDeleteResp
 import com.example.routing.mushroom.get.MushroomGetReq
 import com.example.routing.mushroom.get.MushroomGetResp
 import com.example.routing.mushroom.getAll.MushroomGetAllResp
+import com.example.routing.mushroom.update.MushroomUpdateReq
+import com.example.routing.mushroom.update.MushroomUpdateResp
 import com.example.utils.saveByteArray
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -47,6 +49,40 @@ fun Application.configureMushroomRouting() {
                 call.respond(
                     HttpStatusCode.InternalServerError,
                     MushroomAddResp(
+                        isSuccess = false,
+                        error = BaseError.fromException(ex)
+                    ),
+                )
+            }
+        }
+
+        post("/mushroom/update") {
+            val mushroom = call.receive<MushroomUpdateReq>()
+            try {
+                mushroom.image?.let {
+                    val imageFileName = it.saveByteArray("files/")
+                    mushroom.updateImage(imageFileName)
+                }
+                try {
+                    MushroomRepository.updateMushroom(mushroom)
+                    call.respond(
+                        HttpStatusCode.OK, MushroomUpdateResp(
+                            isSuccess = true
+                        )
+                    )
+                } catch (ex: java.lang.Exception) {
+                    call.respond(
+                        HttpStatusCode.InternalServerError,
+                        MushroomUpdateResp(
+                            isSuccess = false,
+                            error = BaseError.fromException(ex)
+                        ),
+                    )
+                }
+            } catch (ex: java.lang.Exception) {
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    MushroomUpdateResp(
                         isSuccess = false,
                         error = BaseError.fromException(ex)
                     ),

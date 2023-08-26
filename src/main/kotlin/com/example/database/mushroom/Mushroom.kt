@@ -1,5 +1,6 @@
 package com.example.database.mushroom
 
+import com.example.routing.mushroom.update.MushroomUpdateReq
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -23,6 +24,28 @@ object MushroomTable : Table("mushrooms") {
                 it[description] = mushroom.description
                 it[image] = mushroom.image.orEmpty()
             }
+        }
+    }
+
+    fun updateMushroom(mushroom: MushroomUpdateReq) {
+        transaction{
+            MushroomTable.update(where = { MushroomTable.id eq mushroom.id }) {
+                mushroom.lat?.let { lat ->
+                    it[MushroomTable.lat] = lat
+                }
+                mushroom.lon?.let { lon ->
+                    it[MushroomTable.lon] = lon
+                }
+                mushroom.name?.let { name ->
+                    it[MushroomTable.name] = name
+                }
+                mushroom.description?.let { description ->
+                    it[MushroomTable.description] = description
+                }
+                mushroom.image?.let { image ->
+                    it[MushroomTable.image] = image
+                }
+            } > 0
         }
     }
 
