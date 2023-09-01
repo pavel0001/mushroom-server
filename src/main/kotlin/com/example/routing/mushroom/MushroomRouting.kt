@@ -98,8 +98,8 @@ fun Application.configureMushroomRouting() {
         post("/mushroom/delete") {
             val mushroomDeleteReq = call.receive<MushroomDeleteReq>()
             try {
-                MushroomRepository.removeMushroom(mushroomDeleteReq.id)
                 val existedMushroom = MushroomRepository.getById(mushroomDeleteReq.id).toMushroom()
+                MushroomRepository.removeMushroom(mushroomDeleteReq.id)
                 removeImage("files/", existedMushroom.image)
                 call.respond(
                     status = HttpStatusCode.OK,

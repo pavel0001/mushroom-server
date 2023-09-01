@@ -25,5 +25,13 @@ fun String.saveByteArray(path: String): String {
 }
 
 fun removeImage(path: String, fileName: String): Boolean {
-    return File("$path$fileName").delete()
+    try {
+        val file = File("$path$fileName")
+        if (file.exists()) {
+            file.delete()
+        }
+    } catch (ex: Exception) {
+        return false
+    }
+    return true
 }
