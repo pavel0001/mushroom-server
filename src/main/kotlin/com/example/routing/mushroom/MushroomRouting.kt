@@ -11,6 +11,7 @@ import com.example.routing.mushroom.get.MushroomGetResp
 import com.example.routing.mushroom.getAll.MushroomGetAllResp
 import com.example.routing.mushroom.update.MushroomUpdateReq
 import com.example.routing.mushroom.update.MushroomUpdateResp
+import com.example.utils.removeImage
 import com.example.utils.saveByteArray
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -60,8 +61,12 @@ fun Application.configureMushroomRouting() {
             val mushroom = call.receive<MushroomUpdateReq>()
             try {
                 mushroom.image?.let {
-                    val imageFileName = it.saveByteArray("files/")
-                    mushroom.updateImage(imageFileName)
+                    if (it.isNotBlank()) {
+                        val imageFileName = it.saveByteArray("files/")
+                        mushroom.updateImage(imageFileName)
+                        val existedMushroom = MushroomRepository.getById(mushroom.id).toMushroom()
+                        removeImage("files/", existedMushroom.image)
+                    }
                 }
                 try {
                     MushroomRepository.updateMushroom(mushroom)
@@ -94,6 +99,8 @@ fun Application.configureMushroomRouting() {
             val mushroomDeleteReq = call.receive<MushroomDeleteReq>()
             try {
                 MushroomRepository.removeMushroom(mushroomDeleteReq.id)
+                val existedMushroom = MushroomRepository.getById(mushroomDeleteReq.id).toMushroom()
+                removeImage("files/", existedMushroom.image)
                 call.respond(
                     status = HttpStatusCode.OK,
                     message = MushroomDeleteResp(

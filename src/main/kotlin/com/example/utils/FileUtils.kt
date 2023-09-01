@@ -14,6 +14,7 @@ fun PartData.FileItem.save(path: String): String {
     File("$path$fileName").writeBytes(fileBytes)
     return fileName
 }
+
 fun String.saveByteArray(path: String): String {
     val fileBytes = Base64.getDecoder().decode(this)
     val fileName = UUID.randomUUID().toString() + ".png"
@@ -21,4 +22,8 @@ fun String.saveByteArray(path: String): String {
     folder.mkdir()
     File("$path$fileName").writeBytes(fileBytes)
     return fileName
+}
+
+fun removeImage(path: String, fileName: String): Boolean {
+    return File("$path$fileName").delete()
 }
