@@ -24,7 +24,7 @@ jobs:
     env:
       SSH_USER_NAME: ${{ secrets.SSH_USER_NAME }}
       SSH_USER_PASSWORD: ${{ secrets.SSH_USER_PASSWORD }}
-      $SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
     steps:
       - uses: actions/checkout@v3
 
@@ -42,4 +42,4 @@ jobs:
           cd $GITHUB_WORKSPACE
           echo "$SSH_PRIVATE_KEY" > ssh_key
           chmod 600 ssh_key
-          rsync --archive --verbose --progress -e "ssh -i ssh_key" $jar_file root@185.105.88.49:/home/mushroom
+          rsync --archive --verbose --progress -e "ssh -i ssh_key" $jar_file $SSH_USER_NAME@185.105.88.49:/home/mushroom
