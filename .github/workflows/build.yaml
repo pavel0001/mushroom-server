@@ -38,13 +38,13 @@ jobs:
           echo "::set-output name=jar_file::$jar_file"
 
       - name: Deploy with rsync
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         uses: burnett01/rsync-deployments@6.0.0
         with:
           switches: -avzr --delete
           path: $GITHUB_WORKSPACE/$jar_file
-          remote_path: /home/mushroom
+          remote_path: /home/
           remote_host: 185.105.88.49
-          remote_user: $SSH_USER_NAME
+          remote_user: root
           remote_key: $SSH_PRIVATE_KEY
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
