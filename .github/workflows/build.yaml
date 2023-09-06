@@ -1,5 +1,3 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Build project after testing and rsync send
 
 # Controls when the workflow will run
@@ -19,14 +17,30 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run tests
         run: ./gradlew test
+
   build_and_pub:
-    needs: [run_tests]
+    needs: [ run_tests ]
     runs-on: ubuntu-latest
+    env:
+      SSH_USER_NAME: ${{ secrets.SSH_USER_NAME }}
+      SSH_USER_PASSWORD: ${{ secrets.SSH_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@v3
 
       - name: Build project
         run: ./gradlew shadowJar
 
+      - name: Find JAR file
+        run: |
+          jar_file=$(find $GITHUB_WORKSPACE -type f -name "open-door-bot*.jar" -print -quit)
+          echo "Found JAR file: $jar_file"
+          echo "::set-output name=jar_file::$jar_file"
+
       - name: Send project via rsync
-        run: pwd
+        run: |
+          cd $GITHUB_WORKSPACE
+          echo "$SSH_PRIVATE_KEY" > ssh_key
+          chmod 600 ssh_key
+          rsync --archive --verbose --progress -e "ssh -i ssh_key" $jar_file root@185.105.88.49:/home/open-door-bot
+        env:
+          SSH_USER_NAME: ${{ secrets.SSH_USER_NAME }}
