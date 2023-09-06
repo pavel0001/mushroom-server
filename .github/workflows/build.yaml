@@ -21,10 +21,6 @@ jobs:
   build_and_pub:
     needs: [ run_tests ]
     runs-on: ubuntu-latest
-    env:
-      SSH_USER_NAME: ${{ secrets.SSH_USER_NAME }}
-      SSH_USER_PASSWORD: ${{ secrets.SSH_USER_PASSWORD }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
     steps:
       - uses: actions/checkout@v3
 
@@ -40,6 +36,7 @@ jobs:
       - name: Deploy with rsync
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY_PASS: ${{ secrets.SSH_PRIVATE_KEY_PASS }}
         uses: burnett01/rsync-deployments@6.0.0
         with:
           switches: -avzr --delete
@@ -48,3 +45,4 @@ jobs:
           remote_host: 185.105.88.49
           remote_user: root
           remote_key: $SSH_PRIVATE_KEY
+          remote_key_pass: $SSH_PRIVATE_KEY_PASS
