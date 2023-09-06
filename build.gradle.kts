@@ -14,6 +14,12 @@ ktor {
         archiveFileName.set("fat.jar")
     }
 }
+tasks.test {
+    useJUnitPlatform()
+    this.testLogging {
+        events("passed", "failed")
+    }
+}
 
 group = "com.example"
 version = "0.0.3"
@@ -29,11 +35,11 @@ repositories {
 }
 
 dependencies {
+    testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlin_version")
     implementation("io.ktor:ktor-server-call-logging-jvm:2.3.0")
     implementation("io.ktor:ktor-server-forwarded-header-jvm:2.3.0")
     implementation("io.ktor:ktor-server-cors-jvm:2.3.0")
-    testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
 
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
