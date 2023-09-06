@@ -24,6 +24,7 @@ jobs:
     env:
       SSH_USER_NAME: ${{ secrets.SSH_USER_NAME }}
       SSH_USER_PASSWORD: ${{ secrets.SSH_USER_PASSWORD }}
+      $SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
     steps:
       - uses: actions/checkout@v3
 
@@ -32,7 +33,7 @@ jobs:
 
       - name: Find JAR file
         run: |
-          jar_file=$(find $GITHUB_WORKSPACE -type f -name "open-door-bot*.jar" -print -quit)
+          jar_file=$(find $GITHUB_WORKSPACE -type f -name "fat*.jar" -print -quit)
           echo "Found JAR file: $jar_file"
           echo "::set-output name=jar_file::$jar_file"
 
@@ -41,6 +42,4 @@ jobs:
           cd $GITHUB_WORKSPACE
           echo "$SSH_PRIVATE_KEY" > ssh_key
           chmod 600 ssh_key
-          rsync --archive --verbose --progress -e "ssh -i ssh_key" $jar_file root@185.105.88.49:/home/open-door-bot
-        env:
-          SSH_USER_NAME: ${{ secrets.SSH_USER_NAME }}
+          rsync --archive --verbose --progress -e "ssh -i ssh_key" $jar_file root@185.105.88.49:/home/mushroom
