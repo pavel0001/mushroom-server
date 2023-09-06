@@ -43,3 +43,7 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ssh_key
           chmod 600 ssh_key
           rsync --archive --verbose --progress -e "ssh -i ssh_key" $jar_file $SSH_USER_NAME@185.105.88.49:/home/mushroom
+        env:
+            SSH_USER_NAME: ${{ secrets.SSH_USER_NAME }}
+            SSH_USER_PASSWORD: ${{ secrets.SSH_USER_PASSWORD }}
+            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
