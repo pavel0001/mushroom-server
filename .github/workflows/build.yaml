@@ -37,13 +37,14 @@ jobs:
           echo "Found JAR file: $jar_file"
           echo "::set-output name=jar_file::$jar_file"
 
-      - name: Send project via rsync
-        run: |
-          cd $GITHUB_WORKSPACE
-          echo "$SSH_PRIVATE_KEY" > ssh_key
-          chmod 600 ssh_key
-          rsync --archive --verbose --progress -e "ssh -i ssh_key" $jar_file $SSH_USER_NAME@185.105.88.49:/home/mushroom
+      - name: Deploy with rsync
+        uses: burnett01/rsync-deployments@6.0.0
+        with:
+          switches: -avzr --delete
+          path: $GITHUB_WORKSPACE/$jar_file
+          remote_path: /home/mushroom
+          remote_host: 185.105.88.49
+          remote_user: $SSH_USER_NAME
+          remote_key: $SSH_PRIVATE_KEY
         env:
-            SSH_USER_NAME: ${{ secrets.SSH_USER_NAME }}
-            SSH_USER_PASSWORD: ${{ secrets.SSH_USER_PASSWORD }}
-            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
