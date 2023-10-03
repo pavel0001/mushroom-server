@@ -4,6 +4,9 @@ val logback_version: String by project
 val postgres_version: String by project
 val exposed_version: String by project
 
+group = "com.example"
+version = "0.0.4"
+
 plugins {
     kotlin("jvm") version "1.8.21"
     id("io.ktor.plugin") version "2.3.0"
@@ -11,7 +14,7 @@ plugins {
 }
 ktor {
     fatJar {
-        archiveFileName.set("fat.jar")
+        archiveFileName.set("mushroom_v_$version.jar")
     }
 }
 tasks.test {
@@ -20,9 +23,6 @@ tasks.test {
         events("passed", "failed")
     }
 }
-
-group = "com.example"
-version = "0.0.4"
 application {
     mainClass.set("com.example.ApplicationKt")
 
