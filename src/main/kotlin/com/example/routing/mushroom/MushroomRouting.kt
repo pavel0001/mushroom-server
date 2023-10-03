@@ -26,25 +26,42 @@ fun Application.configureMushroomRouting() {
     routing {
 
         post("/mushroom/add") {
-            val mushroom = call.receive<MushroomAddReq>()
             try {
-                val imageFileName = mushroom.image.saveByteArray("files/")
-                try {
-                    MushroomRepository.saveMushroom(mushroom.toMushroom(imageFileName))
-                    call.respond(
-                        HttpStatusCode.OK, MushroomAddResp(
-                            isSuccess = true,
-                            fileName = imageFileName
-                        )
-                    )
-                } catch (ex: java.lang.Exception) {
+                val mushroom = call.receive<MushroomAddReq>()
+                if (mushroom.name == null || mushroom.description == null || mushroom.lat == null || mushroom.lon == null) {
                     call.respond(
                         HttpStatusCode.InternalServerError,
                         MushroomAddResp(
                             isSuccess = false,
-                            error = BaseError.fromException(ex)
+                            error = BaseError.defaultError("name, description, lat and lon should not be null")
                         ),
                     )
+                } else {
+                    val imageFileName = mushroom.image?.let {
+                        if (it.isEmpty()) {
+                            null
+                        } else {
+                            it.saveByteArray("files/")
+                        }
+                    }
+
+                    try {
+                        MushroomRepository.saveMushroom(mushroom.toMushroom(imageFileName))
+                        call.respond(
+                            HttpStatusCode.OK, MushroomAddResp(
+                                isSuccess = true,
+                                fileName = imageFileName
+                            )
+                        )
+                    } catch (ex: java.lang.Exception) {
+                        call.respond(
+                            HttpStatusCode.InternalServerError,
+                            MushroomAddResp(
+                                isSuccess = false,
+                                error = BaseError.fromException(ex)
+                            ),
+                        )
+                    }
                 }
             } catch (ex: java.lang.Exception) {
                 call.respond(
@@ -65,7 +82,7 @@ fun Application.configureMushroomRouting() {
                         val imageFileName = it.saveByteArray("files/")
                         mushroom.updateImage(imageFileName)
                         val existedMushroom = MushroomRepository.getById(mushroom.id).toMushroom()
-                        removeImage("files/", existedMushroom.image)
+                        removeImage("files/", existedMushroom.image.orEmpty())
                     }
                 }
                 try {
@@ -100,7 +117,7 @@ fun Application.configureMushroomRouting() {
             try {
                 val existedMushroom = MushroomRepository.getById(mushroomDeleteReq.id).toMushroom()
                 MushroomRepository.removeMushroom(mushroomDeleteReq.id)
-                removeImage("files/", existedMushroom.image)
+                removeImage("files/", existedMushroom.image.orEmpty())
                 call.respond(
                     status = HttpStatusCode.OK,
                     message = MushroomDeleteResp(

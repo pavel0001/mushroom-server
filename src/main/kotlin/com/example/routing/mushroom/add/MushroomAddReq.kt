@@ -5,19 +5,19 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MushroomAddReq(
-    val lat: Double,
-    val lon: Double,
-    val name: String,
-    val description: String,
-    val image: String
+    val lat: Double?,
+    val lon: Double?,
+    val name: String?,
+    val description: String?,
+    val image: String?
 ) {
-    fun toMushroom(imageName: String): Mushroom {
+    fun toMushroom(imageName: String?): Mushroom {
         return Mushroom(
             id = 0,
-            lat = lat,
-            lon = lon,
-            name = name,
-            description = description,
+            lat = lat!!,
+            lon = lon!!,
+            name = name!!,
+            description = description!!,
             image = imageName
         )
     }

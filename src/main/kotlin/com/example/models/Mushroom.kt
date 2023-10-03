@@ -10,7 +10,7 @@ data class Mushroom(
     val lon: Double,
     val name: String,
     val description: String,
-    val image: String
+    val image: String?
 ) {
     fun toMushroomDTO(): MushroomDTO {
         return MushroomDTO(
