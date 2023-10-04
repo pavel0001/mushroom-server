@@ -5,7 +5,7 @@ val postgres_version: String by project
 val exposed_version: String by project
 
 group = "com.example"
-version = "0.0.4"
+version = "0.0.5"
 
 plugins {
     kotlin("jvm") version "1.8.21"

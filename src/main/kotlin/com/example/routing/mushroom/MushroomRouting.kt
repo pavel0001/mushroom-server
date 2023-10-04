@@ -117,7 +117,11 @@ fun Application.configureMushroomRouting() {
             try {
                 val existedMushroom = MushroomRepository.getById(mushroomDeleteReq.id).toMushroom()
                 MushroomRepository.removeMushroom(mushroomDeleteReq.id)
-                removeImage("files/", existedMushroom.image.orEmpty())
+                existedMushroom.image.let { mushroomImage ->
+                    if (mushroomImage != null && mushroomImage != "placeholder.png") {
+                        removeImage("files/", mushroomImage)
+                    }
+                }
                 call.respond(
                     status = HttpStatusCode.OK,
                     message = MushroomDeleteResp(
