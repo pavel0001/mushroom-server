@@ -46,11 +46,12 @@ fun Application.configureMushroomRouting() {
                     }
 
                     try {
-                        MushroomRepository.saveMushroom(mushroom.toMushroom(imageFileName))
+                        val savedMushroomId = MushroomRepository.saveMushroom(mushroom.toMushroom(imageFileName))
                         call.respond(
                             HttpStatusCode.OK, MushroomAddResp(
                                 isSuccess = true,
-                                fileName = imageFileName
+                                fileName = imageFileName,
+                                itemId = savedMushroomId
                             )
                         )
                     } catch (ex: java.lang.Exception) {
@@ -82,7 +83,11 @@ fun Application.configureMushroomRouting() {
                         val imageFileName = it.saveByteArray("files/")
                         mushroom.updateImage(imageFileName)
                         val existedMushroom = MushroomRepository.getById(mushroom.id).toMushroom()
-                        removeImage("files/", existedMushroom.image.orEmpty())
+                        existedMushroom.image.let { mushroomImage ->
+                            if (mushroomImage != null && mushroomImage != "placeholder.png") {
+                                removeImage("files/", mushroomImage)
+                            }
+                        }
                     }
                 }
                 try {

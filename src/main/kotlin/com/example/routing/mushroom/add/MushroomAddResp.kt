@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MushroomAddResp(
     val isSuccess: Boolean,
+    val itemId: Long? = null,
     val fileName: String? = null,
     override val error: BaseError? = null
 ) : BaseResponse()

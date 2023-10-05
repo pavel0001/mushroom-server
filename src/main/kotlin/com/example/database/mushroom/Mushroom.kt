@@ -15,20 +15,21 @@ object MushroomTable : Table("mushrooms") {
 
     override val primaryKey = PrimaryKey(id)
 
-    fun insertMushroom(mushroom: MushroomDTO) {
-        transaction {
-            MushroomTable.insert {
+    fun insertMushroom(mushroom: MushroomDTO): Long? {
+        return transaction {
+            val insertResult = MushroomTable.insert {
                 it[lat] = mushroom.lat
                 it[lon] = mushroom.lon
                 it[name] = mushroom.name
                 it[description] = mushroom.description
                 it[image] = mushroom.image.orEmpty()
             }
+            return@transaction insertResult.resultedValues?.first()?.get(MushroomTable.id);
         }
     }
 
     fun updateMushroom(mushroom: MushroomUpdateReq) {
-        transaction{
+        transaction {
             MushroomTable.update(where = { MushroomTable.id eq mushroom.id }) {
                 mushroom.lat?.let { lat ->
                     it[MushroomTable.lat] = lat

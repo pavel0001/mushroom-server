@@ -7,9 +7,8 @@ import com.example.routing.mushroom.update.MushroomUpdateReq
 
 object MushroomRepository {
 
-    fun saveMushroom(mushroom: Mushroom) {
-        MushroomTable.insertMushroom(mushroom.toMushroomDTO())
-    }
+    fun saveMushroom(mushroom: Mushroom) = MushroomTable.insertMushroom(mushroom.toMushroomDTO())
+
     fun updateMushroom(mushroom: MushroomUpdateReq) {
         MushroomTable.updateMushroom(mushroom)
     }
